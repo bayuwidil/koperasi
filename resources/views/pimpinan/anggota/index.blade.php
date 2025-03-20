@@ -37,6 +37,7 @@
                   <th>No</th>
                   <th>Nama</th>
                   <th>NIK</th>
+                  <th>email</th>
                   <th>Alamat</th>
                   <th>No Telepon</th>
                   <th>Aksi</th>
@@ -68,6 +69,10 @@
                         <label for="edit_NIK">NIK</label>
                         <input type="text" class="form-control" id="edit_NIK" name="NIK" required>
                     </div>
+                    <div class="form-group">
+                      <label for="edit_email">email</label>
+                      <input type="text" class="form-control" id="edit_email" name="email" required>
+                  </div>
                     <div class="form-group">
                         <label for="edit_alamat">Alamat</label>
                         <input type="text" class="form-control" id="edit_alamat" name="alamat" required>
@@ -108,6 +113,7 @@
                 },
               { data: 'nama', name: 'nama' },
               { data: 'NIK', name: 'NIK' },
+              { data: 'email', name: 'email' },
               { data: 'alamat', name: 'alamat' },
               { data: 'no_telepon', name: 'no_telepon' },
               { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -124,6 +130,7 @@
                 $('#edit_id').val(data.id);
                 $('#edit_nama').val(data.nama);
                 $('#edit_NIK').val(data.NIK);
+                $('#edit_email').val(data.email);
                 $('#edit_alamat').val(data.alamat);
                 $('#edit_no_telepon').val(data.no_telepon);
                 $('#editModal').modal('show');

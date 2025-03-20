@@ -31,6 +31,15 @@
                 </span>
             @enderror
         </div>
+        <div class=" col-6 form-group ">
+            <label for="email">Email</label>
+            <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" value="{{old('email')}}" name="email">
+            @error('email')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
           <div class=" col-6 form-group ">
               <label for="alamat">Alamat</label>
               <input type="text" class="form-control @error('alamat') is-invalid @enderror" id="alamat" value="{{old('alamat')}}" name="alamat">

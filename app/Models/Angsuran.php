@@ -9,11 +9,7 @@ class Angsuran extends Model
 {
     use HasFactory;
     protected $table = 'angsurans';
-    protected $fillable = [
-        'pinjaman_id',
-        'jumlah',
-        'tanggal_bayar',
-    ];
+    protected $fillable = ['pinjaman_id', 'jumlah_bayar', 'denda', 'jatuh_tempo', 'status'];
 
     public function pinjaman()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\pimpinan;
 use App\Http\Controllers\Controller;
 
 use App\Models\Anggota;
+use App\Models\Angsuran;
 use App\Models\Pinjaman;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -47,34 +48,40 @@ class PinjamanpimController extends Controller
             'tempo.min' => 'Tempo minimal harus 1 bulan.',
         ]);
     
-        // Mengambil data dari request
-        $jumlahPinjaman = $request->input('jumlah');
-        $bungaPersen = 0.10; // Bunga 10% tetap
-        $tempo = $request->input('tempo');
+        // Ambil data anggota
+        $anggota = Anggota::findOrFail($request->anggota_id);
+        // dd($anggota);
+        // Hitung pinjaman
+        $jumlahPinjaman = $request->jumlah;
+        $bungaPersen = 0.05; // 10% bunga tetap
+        $tempo = $request->tempo;
     
-        // Menghitung total bunga
         $totalBunga = ($jumlahPinjaman * $bungaPersen) * $tempo;
-    
-        // Menghitung total pembayaran
         $totalPembayaran = $jumlahPinjaman + $totalBunga;
-    
-        // Menghitung angsuran bulanan
         $angsuranBulanan = $totalPembayaran / $tempo;
     
-        // Simpan atau update data pinjaman
-        Pinjaman::updateOrCreate(
-            ['id' => $request->pinjaman_id], // Jika ada ID pinjaman, maka update
-            [
-                'anggota_id' => $request->input('anggota_id'),
-                'jumlah' => $jumlahPinjaman,
-                'bunga' => $totalBunga, // Simpan total bunga (bukan dalam persentase)
-                'tempo' => $tempo,
-                'angsuran_bulanan' => $angsuranBulanan,
-                'total_pembayaran' => $totalPembayaran,
-            ]
-        );
+        // Simpan pinjaman baru
+        $pinjaman = Pinjaman::create([
+            'anggota_id' => $request->anggota_id,
+            'user_id' => $anggota->user_id, // Hubungkan user_id dari anggota
+            'jumlah' => $jumlahPinjaman,
+            'bunga' => $totalBunga,
+            'tempo' => $tempo,
+            'angsuran_bulanan' => $angsuranBulanan,
+            'total_pembayaran' => $totalPembayaran,
+        ]);
     
-        return response()->json(['success' => 'Pinjaman berhasil disimpan.']);
+        // Simpan angsuran otomatis
+        for ($i = 1; $i <= $tempo; $i++) {
+            Angsuran::create([
+                'pinjaman_id' => $pinjaman->id,
+                'jumlah_bayar' => $angsuranBulanan,
+                'jatuh_tempo' => now()->addMonths($i),
+                'status' => 0, // 0 = Belum Lunas
+            ]);
+        }
+    
+        return response()->json(['success' => 'Pinjaman berhasil disimpan dan angsuran telah dibuat.']);
     }
 
     public function edit($id) {
@@ -83,16 +90,14 @@ class PinjamanpimController extends Controller
         return response()->json($pinjaman);
     }
     
-    
-
     public function destroy($id)
-{
-    $pinjaman = Pinjaman::find($id);
-    if ($pinjaman) {
-        $pinjaman->delete();
-        return response()->json(['success' => 'Pinjaman berhasil dihapus.']);
-    }
+    {
+        $pinjaman = Pinjaman::find($id);
+        if ($pinjaman) {
+            $pinjaman->delete();
+            return response()->json(['success' => 'Pinjaman berhasil dihapus.']);
+        }
 
-    return response()->json(['error' => 'Pinjaman tidak ditemukan.'], 404);
-}
+        return response()->json(['error' => 'Pinjaman tidak ditemukan.'], 404);
+    }
 }

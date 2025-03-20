@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\pimpinan;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anggota;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -26,22 +27,28 @@ class AdminController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:3|confirmed',
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin',
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'admin',
+    ]);
 
-        return response()->json(['success' => 'Admin berhasil ditambahkan.']);
-    }
+    // Masukkan user_id ke dalam tabel anggotas
+    Anggota::create([
+        'user_id' => $user->id
+    ]);
+
+    return response()->json(['success' => 'Admin berhasil ditambahkan.']);
+}
+
     public function edit($id)
 {
     $admin = User::findOrFail($id);
@@ -54,7 +61,7 @@ public function update(Request $request, $id)
 
     $request->validate([
         'name' => 'required|string|max:255',
-        'password' => 'nullable|string|min:6|confirmed', // Password opsional
+        'password' => 'nullable|string|min:3|confirmed', // Password opsional
     ]);
 
     // Update nama

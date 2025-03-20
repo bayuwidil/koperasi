@@ -10,7 +10,7 @@
                 <th>No</th>
                 <th>Nama Anggota</th>
                 <th>Jumlah Pinjaman</th>
-                <th>Bunga (10%)</th>
+                <th>Bunga (5%)</th>
                 <th>Tempo (Bulan)</th>
                 <th>Angsuran Bulanan</th>
                 <th>Total Pembayaran</th>

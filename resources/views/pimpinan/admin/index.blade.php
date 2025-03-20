@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h3>Manajemen Admin</h3>
-    <a class="btn btn-success mb-3" id="createNewAdmin">Tambah Admin</a>
+    <h3>Manajemen akun Nasabah</h3>
+    <a class="btn btn-success mb-3" id="createNewAdmin">Tambah</a>
     <table class="table table-bordered" id="adminTable">
         <thead>
             <tr>
@@ -160,7 +160,7 @@
                 $('#errorMessages').hide();
 
                 $('#admin_id').val(data.id);
-                $('#name').val(data.name);
+                $('#name').val(data.name).prop('readonly', true);
                 $('#email').val(data.email).prop('readonly', true); // Disable email
                 $('#password').val('');
                 $('#password_confirmation').val('');

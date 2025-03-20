@@ -15,7 +15,8 @@ class Pinjaman extends Model
         'bunga',
         'tempo',
         'angsuran_bulanan',
-        'total_pembayaran'
+        'total_pembayaran',
+        'user_id'
     ];
 
     public function angsurans()
@@ -27,4 +28,9 @@ class Pinjaman extends Model
     {
         return $this->belongsTo(Anggota::class);
     }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+    
 }

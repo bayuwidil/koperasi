@@ -104,8 +104,20 @@
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+  <script>
+    .badge {
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+      @media (min-width: 992px) {
+    .modal-lg-custom {
+      max-width: 90%; /* Atur lebar sesuai kebutuhan */
+    }
+  }
+</script>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -160,7 +172,7 @@
               <div class="copyright text-center text-sm text-muted text-lg-start">
                 © <script>
                   document.write(new Date().getFullYear())
-                </script>,
+                </>,
                 made with <i class="fa fa-heart"></i> by
                 <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
                 for a better web.
@@ -191,7 +203,13 @@
     @include('layouts.navbarpim')
     @yield('content')
      <!-- jQuery -->
+
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
+     
 
      <!-- DataTables JS -->
      <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -218,7 +236,7 @@
     });
 </script>
 <!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 </body>
 
 </html>

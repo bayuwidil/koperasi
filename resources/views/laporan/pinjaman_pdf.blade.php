@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Daftar Anggota</title>
+    <title>Laporan Daftar Pinjaman</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +22,7 @@
 </head>
 <body>
 
-    <h2>Laporan Anggota</h2>
+    <h2>Laporan Pinjaman</h2>
 
     @if($startDate && $endDate)
         <p>Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>

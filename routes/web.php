@@ -34,9 +34,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/angsuran/pay', [AngsuranController::class, 'pay'])->name('angsuran.pay');
     Route::post('/angsuran/callback', [AngsuranController::class, 'callback'])->name('angsuran.callback');
     Route::get('/angsuran/list', [AngsuranController::class, 'listByPinjaman'])->name('angsuran.list');
+    Route::get('/pinjamans', [AngsuranController::class, 'pinjamanindex'])->name('pinjamans.index');
 
-
-
+    Route::get('/laporans/pinjamans', [AngsuranController::class, 'laporanpinjaman'])->name('laporans.pinjamans');
+    Route::get('/laporans/pinjamans/export-pdfs', [AngsuranController::class, 'exportpinjamanPDF'])->name('laporans.pinjamans.export-pdfs');
     //anggota
     // route::get('/anggota',[AnggotaController::class, 'index']);
     // Route::get('anggota/get-data', [AnggotaController::class, 'getAnggota'])->name('anggota.getData');

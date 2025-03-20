@@ -8,14 +8,14 @@
 @endif
 
 <nav aria-label="breadcrumb" style="margin-left:3%;">
-    <h3 class="font-weight-bolder mb-0">Anggota</h3>
+    <h3 class="font-weight-bolder mb-0">Daftar Angsuran</h3>
 </nav>
 
 <div class="container-fluid py-4">
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h3>Daftar Angsuran</h3>
+        <h3></h3>
         <table class="table table-hover" style="width: 100%;" id="angsuranTable">
             <thead>
                 <tr>

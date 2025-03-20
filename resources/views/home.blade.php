@@ -14,7 +14,7 @@
                         <div class="numbers">
                           <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Angsuran</p>
                           <h5 class="font-weight-bolder mb-0">
-                            Rp.{{number_format($pinjamantoday)}},00
+                            Rp.{{number_format($angsuranBulanIni)}},00
                           </h5>
                         </div>
                       </div>

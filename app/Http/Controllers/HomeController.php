@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anggota;
+use App\Models\Angsuran;
 use App\Models\Pinjaman;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,16 +26,27 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
-        $anggota = Anggota::count();
-        $anggotaBergabungHariIni = Anggota::whereDate('created_at', today())->count();
+    public function index() 
+{
+    $userId = Auth::id(); // Ambil ID pengguna yang sedang login
 
-        $pinjamantotal = Pinjaman::sum('jumlah');
-        $pinjamantoday = Pinjaman::whereDate('created_at', operator: today())->sum('jumlah');
+    // Total pinjaman yang diambil oleh pengguna yang login
+    $pinjamantotal = Pinjaman::where('user_id', $userId)
+        ->whereHas('angsurans', function ($query) {
+            $query->where('status', 0); // Hanya pinjaman dengan angsuran yang belum lunas
+        })
+        ->sum('jumlah');
 
-        return view('home', compact('anggota', 'anggotaBergabungHariIni','pinjamantotal','pinjamantoday'));
-    }
+    // Tagihan angsuran bulan ini
+    $angsuranBulanIni = Angsuran::whereHas('pinjaman', function ($query) use ($userId) {
+        $query->where('user_id', $userId);
+    })
+    ->where('status', 0) // Hanya angsuran yang belum lunas
+    ->whereBetween('jatuh_tempo', [Carbon::now()->startOfMonth(), Carbon::now()->addMonth()->endOfMonth()])
+    ->sum('jumlah_bayar');
+
+    return view('home', compact('pinjamantotal', 'angsuranBulanIni'));
+}
 
     public function indexpim()
     {

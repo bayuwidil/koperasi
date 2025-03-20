@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Laporan Daftar Pinjaman</h2>
 
-    <form action="{{ route('laporan.pinjaman') }}" method="GET" class="mb-4">
+    <form action="{{ route('laporans.pinjamans') }}" method="GET" class="mb-4">
         <div class="row">
             <div class="col-md-4">
                 <label for="start_date">Dari Tanggal:</label>
@@ -18,7 +18,7 @@
                 <label>&nbsp;</label>
                 <div>
                     <button type="submit" class="btn btn-primary">Tampilkan</button>
-                    <a href="{{ route('laporan.pinjaman.export-pdf', ['start_date' => request()->get('start_date'), 'end_date' => request()->get('end_date')]) }}" class="btn btn-danger">Download PDF</a>
+                    <a href="{{ route('laporans.pinjamans.export-pdfs', ['start_date' => request()->get('start_date'), 'end_date' => request()->get('end_date')]) }}" class="btn btn-danger">Download PDF</a>
                 </div>
             </div>
         </div>

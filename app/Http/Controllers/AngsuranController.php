@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anggota;
 use App\Models\Angsuran;
 use App\Models\Pinjaman;
 use Carbon\Carbon;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class AngsuranController extends Controller
 {
@@ -99,7 +101,8 @@ class AngsuranController extends Controller
         $denda = 0;
     
         if ($angsuran->status == 0 && $today->gt($jatuhTempo)) {
-            $denda = $angsuran->jumlah_bayar * 0.002; // 0.2% denda jika belum dibayar
+            $bulanTerlambat = Carbon::parse($jatuhTempo)->diffInMonths($today);
+            $denda = $angsuran->jumlah_bayar * 0.002 * $bulanTerlambat; // Hitung denda berdasarkan bulan terlambat
             $angsuran->denda = $denda; // Update denda di database
             $angsuran->save();
         } else {
@@ -151,5 +154,70 @@ class AngsuranController extends Controller
         return response()->json(['angsuran' => $angsuran]);
     }
     
+
+    public function pinjamanindex(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Pinjaman::with('anggota', 'angsurans') // Pastikan relasi anggota dan angsurans dimuat
+                ->where('user_id', Auth::id()) // Filter berdasarkan ID pengguna yang sedang login
+                ->select('pinjamans.*')
+                ->orderBy('created_at', 'asc');
     
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('anggota.nama', function ($row) {
+                    return $row->anggota->nama; // Ambil nama anggota dari relasi
+                })
+                ->addColumn('status', function ($row) {
+                    // Cek apakah semua angsuran sudah lunas
+                    $isLunas = $row->angsurans->every(function ($angsuran) {
+                        return $angsuran->status == 1; // Status 1 berarti lunas
+                    });
+                    return $isLunas ? 'Lunas' : 'Belum Lunas';
+                })
+                ->make(true);
+        }
+    
+        return view('pinjaman.index');
+    }
+
+    public function laporanpinjaman(Request $request)
+    {
+        // Ambil input start_date dan end_date
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
+        // Filter pinjaman berdasarkan tanggal bergabung
+        $pinjaman = Pinjaman::where('user_id', Auth::id());
+
+        if ($startDate && $endDate) {
+            $pinjaman->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $pinjaman = $pinjaman->get();
+
+        return view('laporan.pinjaman', compact('pinjaman'));
+    }
+
+    public function exportpinjamanPDF(Request $request)
+    {
+        // Ambil input start_date dan end_date
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
+        // Filter pinjaman berdasarkan tanggal bergabung
+        $pinjaman = Pinjaman::where('user_id', Auth::id());
+
+        if ($startDate && $endDate) {
+            $pinjaman->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $pinjaman = $pinjaman->get();
+
+        // Buat PDF dengan menggunakan library DomPDF
+        $pdf = PDF::loadView('laporan.pinjaman_pdf', compact('pinjaman', 'startDate', 'endDate'));
+
+        // Mengunduh file PDF
+        return $pdf->download('laporan_pinjaman.pdf');
+    }
 }
